@@ -1,0 +1,36 @@
+---
+title: "Proyecto3"
+author: "Andres Patiño"
+date: "2025-03-09"
+output: html_document
+---
+
+## Cargar y Preparar los Datos
+
+Primero, cargamos los datos desde un archivo Excel y preparamos las variables necesarias para el análisis.
+
+```{r setup, echo=TRUE}
+library(readxl)
+datos <- read_excel("C:\\Users\\andres.patino\\Documents\\Documentos\\Ciencia de Datos - Betametrica\\Proyecto3.xlsx", sheet = 1)
+
+# Convertir la columna 'Fecha' a formato Date
+datos$Fecha <- as.Date(datos$Fecha, format="%b-%y")
+
+# Crear una variable de tiempo (en meses)
+datos$Tiempo <- as.numeric(difftime(datos$Fecha, min(datos$Fecha), units="weeks")) / 4  # Aproximadamente 4 semanas por mes
+
+# Regresión Lineal
+modelo_exportaciones <- lm(Exportaciones ~ Tiempo, data=datos)
+modelo_m2 <- lm(M2 ~ Tiempo, data=datos)
+
+# Resumen de los modelos
+summary(modelo_exportaciones)
+summary(modelo_m2)
+
+# Regresión Logarítmica
+modelo_log_exportaciones <- lm(log(Exportaciones) ~ Tiempo, data=datos)
+modelo_log_m2 <- lm(log(M2) ~ Tiempo, data=datos)
+
+# Resumen de los modelos logarítmicos
+summary(modelo_log_exportaciones)
+summary(modelo_log_m2)
