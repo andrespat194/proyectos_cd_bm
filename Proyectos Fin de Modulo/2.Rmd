@@ -1,0 +1,67 @@
+---
+title: "Proyecto Fin Modulo 2"
+author: "Andres Patiño"
+date: "2025-03-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Libraries
+
+```{r}
+library(readxl)
+library(ggplot2)
+library(tidyr)
+```
+
+## Load Data
+
+```{r}
+datos <- read_excel("C:/Users/andres.patino/Documents/Documentos/Ciencia de Datos - Betametrica/Proyecto1.xlsx", sheet = 1)
+```
+
+## Boxplot of Dep_Vista
+
+```{r}
+ggplot(datos, aes(x = as.factor(Fecha), y = Dep_Vista)) +
+  geom_boxplot() +
+  labs(title = "Boxplot de Dep_Vista", y = "Valor", x = "Fecha") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))  # Rotate for readability
+```
+
+## Data Transformation
+
+```{r}
+datos_long <- pivot_longer(datos, cols = c(Dep_Vista, Dep_CA), 
+                           names_to = "Tipo_Deposito", values_to = "Valor")
+```
+
+## Bar Chart Comparison
+
+```{r}
+ggplot(datos_long, aes(x = Fecha, y = Valor, fill = Tipo_Deposito)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Comparación de Depósitos Vista y Caja de Ahorro",
+       x = "Fecha", y = "Valor en Depósitos") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 2))
+```
+
+## Line Chart with Trend
+
+```{r}
+ggplot(datos_long, aes(x = Fecha, y = Valor, color = Tipo_Deposito)) +
+  geom_line() +  # Gráfico de líneas
+  geom_smooth(method = "lm", se = FALSE) +  # Línea de tendencia (regresión lineal)
+  facet_wrap(~Tipo_Deposito, scales = "free_y") +
+  labs(title = "Evolución de Depósitos Vista y Caja de Ahorro", 
+       x = "Fecha", 
+       y = "Valor", 
+       color = "Tipo de Depósito") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+```{r}
